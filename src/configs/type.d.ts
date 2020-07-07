@@ -1,0 +1,101 @@
+import {
+    LoadURLOptions,
+    BrowserWindowConstructorOptions
+} from "electron"
+declare global {
+    namespace NodeJS {
+        interface Global {
+            istate: IState;
+            __static: string;
+            pcTips:(title: string, file?: string, silent?: boolean) => void;
+            winNow:{
+
+            }
+        }
+    }
+}
+
+type SocketSend = <
+CMD extends SocketCmd,
+DB extends SocketParamDb[CMD][0]
+>(cmd: CMD, db: DB)=>Promise<any>;
+type SocketRes={
+    id_socket: string,
+    cmd: SocketCmd,
+    db:SocketParamDb[SocketCmd][1]
+}
+type SocketCmd = keyof SocketParamDb;
+interface SocketParamDb {
+    //cmd:[send,req]
+    '': ['', string],
+    setTimeout: ['', ''],
+    login: ['', IState['id_socket']],
+}
+interface IState {
+    id_wins: number;
+    nodeUid_login: string;
+    id_socket:'请输入手机号'|'请求注册,等待客服相应'|'已注册已登录';
+    tel_login: string;
+    shops_login: {
+        [shopname: string]: {
+            shoppassword: string;
+        };
+    };
+    db: {
+        [md5TopUrl_proid in string | number]: {
+            proid: string;
+            title: string;
+            price: number;
+            pic: string;
+            url: string;
+        }
+    };
+    // db_kefu: {
+    //     [shopname: string]: {
+    //         id_socket: number;
+    //         datetime: TimeRanges;
+    //         db: IState["db"];
+    //     };
+    // };
+
+}
+interface Option {
+    label: string;
+    click?: () => void;
+    winOptions?: {
+        width?: number,
+        height?: number,
+        webPreferences?: {
+            plugins?: true;
+            nodeIntegrationInSubFrames?: false,// Boolean (可选项)(实验性)，
+            // 是否允许在子页面(iframe)或子窗口(child window)中集成Node.js
+            // 预先加载的脚本会被注入到每一个iframe，你可以用 process.isMainFrame 来判断当前是否处于主框架（main frame）中。
+            webviewTag?: true;// 是否启用 <webview> tag标签. 默认值为 false
+            nodeIntegrationInWorker?: false; // Boolean(可选) - 是否在Web工作器中启用了Node集成.默认值为 false
+            nodeIntegration?: false; // node的功能
+            // preload?: string;// 无论页面是否集成Node, 此脚本都可以访问所有Node API 脚本路径为文件的绝对路径。
+            allowRunningInsecureContent?: false,// 布尔值（可选）
+            // -允许https页面运行来自http URL的JavaScript，CSS或插件。默认值false。
+        };
+    }
+    labelTrue?: true
+    crx?: () => void
+    insertCSS?: (() => Promise<string>) | string// css文件路径
+    executeJavaScript?: string;// jscode
+    loadURL?: [string, LoadURLOptions?]
+}
+
+interface ConstructorOptions extends Option, BrowserWindowConstructorOptions { }
+
+type WinsConfig = {
+    [k in number]: Option & {
+        winOptions?: {
+            webPreferences?: {
+                preload?: string | (() => Promise<string>)
+            }
+        }
+    }
+}
+type SrcCrx = 'wxw';
+type JsFile = 'xiaoxin/main.js' | 'xiaoxin/show.js' | 'xiaoxin/get.js';
+type CssFile = 'xiaoxin/main.css';

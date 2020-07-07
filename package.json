@@ -1,0 +1,44 @@
+{
+  "name": "electron-quick-start-typescript",
+  "version": "1.0.0",
+  "description": "written with Typescript",
+  "scripts": {
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "build": "tsc",
+    "view": "echo $npm_config_name",
+    "watch": "tsc -w",
+    "main": "electron ./dist/background.js",
+    "start": "npm run build && npm run main",
+    "hot": "npx gulp && npm run main",
+    "hot2": "concurrently \"npx gulp\" \"npm run main\"",
+    "packager": "electron-packager ./ --platform=win32 --arch=x64 --out ./outApp --nx1 --overwrite",
+    "updater": "electron-updater ./ --platform=win32 --arch=x64 --out ./outApp --nx1 --overwrite"
+  },
+  "bin": {},
+  "config": {},
+  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@types/crypto-js": "^3.1.47",
+    "@types/gulp": "^4.0.2",
+    "@types/node": "^12.12.48",
+    "@types/ws": "^7.2.6",
+    "concurrently": "^5.2.0",
+    "cross-env": "^7.0.2",
+    "electron": "^9.1.0",
+    "electron-packager": "15.0.0",
+    "electron-updater": "4.3.1",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.6",
+    "typescript-register": "^1.1.0"
+  },
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "electron-store": "^5.2.0",
+    "node-machine-id": "^1.1.12",
+    "ws": "^7.3.0"
+  }
+}
