@@ -1,22 +1,32 @@
+new Promise((ok)=>{
+  require('electron-reloader')(module);
+  ok()
+}).catch(console.log)
 import {
   app,
   BrowserWindow,
   Notification
 } from "electron";
-import {init} from './configs/index'
+import { init } from './configs/index'
 
 app.whenReady().then(
+//   () => Promise.resolve(global.pcTips('加载开始', process.cwd()))
+// ).then(
   //   init
   // ).then(
   () => {
-    global.pcTips('初始化完成22e', process.cwd())
-    const c = new BrowserWindow();
+    const c = new BrowserWindow({width:500});
+    c.webContents.openDevTools();
     const u = [
       'http://www.ruanyifeng.com/',
       'http://www.w3cbus.com/',
+      'https://shan-shui-inf.glitch.me',
+      'https://huaban.com/',
       'http://www.baidu.com/'
     ];
-    c.loadURL(u[1])
+    const nowU = u[0];
+    c.loadURL(nowU)
+    global.pcTips('加载完成', process.cwd())
   }
 )
 
@@ -26,6 +36,8 @@ app.on("window-all-closed", () => {
   }
   app.exit(0)
   process.kill(process.pid)
+  process.exit()
+
 })
 
 global.pcTips = (title, file, silent) => {

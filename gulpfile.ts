@@ -1,12 +1,17 @@
-import {app} from "electron";
-import { task, watch, dest } from "gulp";
-import ts from "gulp-typescript";
-// const tsProject = ts.createProject("tsconfig.json");
-task("default", () => {
-  // watch(['./src/background.ts', './src/config/*.ts'], () => {
-  //   app.relaunch()
-  //   app.exit(0)
-  // });
-  // watch(['./*.{html.js.css}'], restart);
- // tsProject.src().pipe(tsProject()).js.pipe(dest("./dist"));
+import gulp from "gulp";
+import nodemon from "gulp-nodemon";
+import { createProject } from "gulp-typescript";
+// import { watch } from "chokidar";
+const tsProject = createProject("tsconfig.json");
+
+gulp.task("default", async () => {
+  return tsProject.src()
+    .pipe(tsProject())
+    .js.pipe(gulp.dest("build"));
 });
+
+// try {
+//   // tslint:disable-next-line: no-var-requires
+//   require('electron-reloader')(module);
+// // tslint:disable-next-line: no-empty
+// } catch (_) { }

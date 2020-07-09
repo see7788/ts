@@ -1,4 +1,4 @@
-import * as ElectronStore from "electron-store";
+import ElectronStore = require("electron-store");
 const stateCache = new ElectronStore();
 const cacheRootK = 'ttt';
 // require('electron').remote.getGlobal('istate').db = 'new value'

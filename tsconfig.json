@@ -3,18 +3,19 @@
     "module": "commonjs",
     "target": "es5",
     "noImplicitAny": true,
+    "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "build",
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"],
+      "*": [
+        "node_modules/*",
+      ],
     }
   },
-  "files": [
-    "./src/background.ts"
-  ],
   "include": [
-    "src/**/*"
-  ],
+    "./src/**/*",
+    "*.d.ts"
+  ]
 }

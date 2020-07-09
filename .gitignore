@@ -1,4 +1,5 @@
-/node_modules/
-/dist/
-/crx/
-/outApp/
+node_modules
+dist
+static
+outApp
+build

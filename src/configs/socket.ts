@@ -1,8 +1,8 @@
 import { machineId } from "node-machine-id";
 import { to_base64, from_base64 } from "../fun";
-import * as WebSocket from 'ws';
+import WebSocket from 'ws';
 import { SocketSend, SocketRes, SocketParamDb } from "./type";
-import * as CryptoJS from "crypto-js";
+import  CryptoJS from "crypto-js";
 const socketHost = 'ws://39.97.216.195:8889';
 export const initSocket = (): Promise<never> => new Promise(async ok => {
     global.istate.nodeUid_login = await machineId();
@@ -22,13 +22,12 @@ export const initSocket = (): Promise<never> => new Promise(async ok => {
     // ws.onclose = () => socketSend('login', '').catch(console.log)
     // ws.onerror = () => socketSend('login', '').catch(console.log)
     ws.onopen = () => {
-        socketSend('login', '').catch(console.log);
+        socketSend('login', '');
         setTimeout(function timeout() {
-            socketSend('setTimeout', '').catch(console.log);
+            socketSend('setTimeout', '');
         }, 500);
     }
     ws.onmessage = ({ data}) => {
-        console.log(data);
         const { id_socket, cmd, db } = data as unknown as SocketRes;
         switch (cmd) {
             case '':

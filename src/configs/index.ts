@@ -84,7 +84,7 @@ const initMenu = () => new Promise((ok) => {
         if (v['labelTrue']) {
             c1.push({
                 label: v.label,
-                click: v['click'] ? v['click'] : () => {
+                click: v['click'] ? v.click: () => {
                     global.istate.id_wins = i
                     createWindow()
                 }

@@ -2,6 +2,7 @@
 // // https://github.com/youyinnn/electron-nice-auto-reload
 //electron-reloader 不能用
 // const client = require('electron-connect').client;不能用
+chokidar//可用
 
     // extensions.loadExtension(p2)
     // const p2='/AppData/Local/Google/Chrome/User Data/Default/Extensions/ioadaikpljilagoddljnamloiebcoopb'
@@ -13,9 +14,16 @@
 // process.env.HOME 用户目录
 //process.cwd() 工作根目录
 //process.resourcesPath 资源目录路径
-  // app.relaunch()// 重启实例
-        // app.exit(0)
-        console.dir({type:'change',path:f})
+
+   // watch('./src/background.ts').on(
+    //   'change',
+    //   () => new Promise(ok => {
+    //     app.relaunch(),
+    //       ok();
+    //   }).then(
+    //     () => app.exit()
+    //   )
+    // )
         BrowserWindow.getAllWindows().forEach(winId =>{
             winId.webContents.reloadIgnoringCache();
             // BrowserWindow.fromId(winId)?BrowserWindow.fromId(winId).reload():console.log(`winid${winId}:miss`)
