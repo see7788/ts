@@ -1,7 +1,4 @@
-new Promise((ok)=>{
-  require('electron-reloader')(module);
-  ok()
-}).catch(console.log)
+
 import {
   app,
   BrowserWindow,
@@ -24,7 +21,7 @@ app.whenReady().then(
       'https://huaban.com/',
       'http://www.baidu.com/'
     ];
-    const nowU = u[0];
+    const nowU = u[1];
     c.loadURL(nowU)
     global.pcTips('加载完成', process.cwd())
   }
