@@ -13,6 +13,7 @@
     "js": "electron ./build/background.js",
     "js1": "concurrently \"npm run watch\" \"npm run js\"",
     "js2": "concurrently \"npm run watch\" \"npx gulp\" \"npm run js\"",
+    "js3": "concurrently \"npx gulp\" \"npm run js\"",
     "ts": "electron ./src/background.ts",
     "ts1": "nodemon --watch ./src/background.ts --exec node -r ts-node/register electron .",
     "ts2": "nodemon --exec npm run js",
@@ -41,7 +42,6 @@
     "electron-packager": "15.0.0",
     "electron-reloader": "^1.0.1",
     "electron-updater": "4.3.1",
-    "gulp-nodemon": "^2.5.0",
     "gulp-tslint": "^8.1.4",
     "ts-node": "^8.10.2",
     "tslint": "^6.1.2",
@@ -50,7 +50,6 @@
   "dependencies": {
     "@babel/core": "^7.10.4",
     "@babel/register": "^7.10.4",
-    "@types/gulp-nodemon": "0.0.32",
     "chokidar": "^3.4.0",
     "crypto-js": "^4.0.0",
     "electron-store": "^5.2.0",

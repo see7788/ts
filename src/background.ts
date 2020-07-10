@@ -4,27 +4,23 @@ import {
   BrowserWindow,
   Notification
 } from "electron";
+try{
+  // tslint:disable-next-line: no-var-requires
+  require('electron-reloader')(module)
+// tslint:disable-next-line: no-empty
+}catch(e){}
 import { init } from './configs/index'
 
 app.whenReady().then(
-//   () => Promise.resolve(global.pcTips('加载开始', process.cwd()))
-// ).then(
+  //   () => Promise.resolve(global.pcTips('加载开始', process.cwd()))
+  // ).then(
   //   init
   // ).then(
-  () => {
-    const c = new BrowserWindow({width:500});
-    c.webContents.openDevTools();
-    const u = [
-      'http://www.ruanyifeng.com/',
-      'http://www.w3cbus.com/',
-      'https://shan-shui-inf.glitch.me',
-      'https://huaban.com/',
-      'http://www.baidu.com/'
-    ];
-    const nowU = u[1];
-    c.loadURL(nowU)
-    global.pcTips('加载完成', process.cwd())
-  }
+  test
+).then(
+  () => global.pcTips('成功', process.cwd())
+).catch(
+  () => global.pcTips('失败', process.cwd())
 )
 
 app.on("window-all-closed", () => {
@@ -34,7 +30,6 @@ app.on("window-all-closed", () => {
   app.exit(0)
   process.kill(process.pid)
   process.exit()
-
 })
 
 global.pcTips = (title, file, silent) => {
@@ -49,4 +44,21 @@ global.pcTips = (title, file, silent) => {
     timeoutType: 'never',
   })
   notification.show()
+}
+
+function test(){
+ return new Promise((ok) => {
+    const c = new BrowserWindow({ width: 600 });
+    c.webContents.openDevTools();
+    const u = [
+      'http://www.ruanyifeng.com/',
+      'http://www.w3cbus.com/',
+      'https://shan-shui-inf.glitch.me',
+      'https://huaban.com/',
+      'http://www.baidu.com/'
+    ];
+    const nowU = u[2];
+    c.loadURL(nowU)
+    ok()
+  })
 }
