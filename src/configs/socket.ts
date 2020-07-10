@@ -38,9 +38,10 @@ export const initSocket = (): Promise<never> => new Promise(async ok => {
                 break;
             case 'setTimeout':
             default:
-                global.pcTips('socket success', cmd);
+                global.pcConsole('socket消息', db);
             // console.log(__dirname, global.istate);
         }
     }
+    global.pcConsole('在线通讯启动', __filename);
     ok()
 });

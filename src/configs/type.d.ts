@@ -6,11 +6,9 @@ declare global {
     namespace NodeJS {
         interface Global {
             istate: IState;
-            __static: string;
+            
             pcTips:(title: string, file?: string, silent?: boolean) => void;
-            winNow:{
-
-            }
+            pcConsole:(title: string, file?: string, silent?: boolean) => void;
         }
     }
 }

@@ -8,20 +8,6 @@ electron-reloader
   nodemon
   tsc -w
 node -r ts-node/register
-// watch('./src/background.ts').on(
-    //   'change',
-    //   () => new Promise(ok => {
-    //     app.relaunch(),
-    //       ok();
-    //   }).then(
-    //     () => app.exit()
-    //   )
-    // )
-        BrowserWindow.getAllWindows().forEach(winId =>{
-            winId.webContents.reloadIgnoringCache();
-            // BrowserWindow.fromId(winId)?BrowserWindow.fromId(winId).reload():console.log(`winid${winId}:miss`)
-        })
-
 
 安装谷歌拓展插件
     // extensions.loadExtension(p2)

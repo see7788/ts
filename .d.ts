@@ -1,0 +1,1 @@
+declare module 'electron-nice-auto-reload'

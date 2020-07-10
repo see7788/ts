@@ -18,5 +18,6 @@ export const getState = (): Promise<never> => new Promise( ok => {
             id_wins: 0
         }
     }
+    global.pcConsole('state启动', __filename);
     ok();
 })

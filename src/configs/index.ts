@@ -1,9 +1,10 @@
 import * as path from "path"
 import * as fs from "fs";
+import chokidar from "chokidar"
 import { initSocket } from './socket'
 import { getState, setState } from "./state";
 import { WinsConfig, SrcCrx, JsFile, CssFile } from "./type";
-import { Menu, BrowserWindow, MenuItemConstructorOptions, } from "electron"
+import { app, Menu, BrowserWindow, MenuItemConstructorOptions, } from "electron"
 const erFileAllPath = (f: string) => path.resolve(__dirname, '../er', f)
 const crx = (...p: SrcCrx[]) => path.resolve(`./crx/${p}`);
 
@@ -84,7 +85,7 @@ const initMenu = () => new Promise((ok) => {
         if (v['labelTrue']) {
             c1.push({
                 label: v.label,
-                click: v['click'] ? v.click: () => {
+                click: v['click'] ? v.click : () => {
                     global.istate.id_wins = i
                     createWindow()
                 }
@@ -93,6 +94,7 @@ const initMenu = () => new Promise((ok) => {
     });
     const c2 = Menu.buildFromTemplate(c1);
     Menu.setApplicationMenu(c2);
+    global.pcConsole('menu启动', __filename);
     ok()
 })
 const createWindow = (): Promise<never> => {
@@ -130,14 +132,53 @@ const createWindow = (): Promise<never> => {
         });
         win.on('closed', () => { win = null })
         setState();
+        global.pcConsole('窗口启动', __filename);
         ok();
     })
 };
-
-export const init = () => getState().then(
+const wacther = () => new Promise(ok => {
+    let chokidarc: boolean = true
+    chokidar.watch('./src').on('change', (pathstr, stats) => {
+        if (stats && chokidarc) {
+            chokidarc = false
+            setTimeout(() => {
+                // path.extname(pathstr)==='.ts'
+                if (pathstr.indexOf('configs')) {
+                    global.pcConsole('app刷新', __dirname)
+                    app.relaunch()
+                    app.exit(0)
+                } else {
+                    BrowserWindow.getAllWindows().forEach(bw => {
+                        const ctx = bw.webContents
+                        if (ctx.isDevToolsOpened()) {
+                            // if reopen devTool is needed
+                            ctx.closeDevTools()
+                            ctx.reloadIgnoringCache()
+                            ctx.on("did-frame-finish-load", () => {
+                                ctx.once("devtools-opened", () => {
+                                    bw.focus()
+                                })
+                                ctx.openDevTools()
+                            })
+                        } else {
+                            ctx.reloadIgnoringCache()
+                        }
+                    })
+                    global.pcConsole('窗口刷新', __dirname)
+                }
+                chokidarc = true
+            }, 1000);
+        }
+    })
+    global.pcConsole('启动监听', __dirname)
+    ok()
+})
+export const init = () => wacther().then(
+    getState
+).then(
     initSocket
 ).then(
     initMenu
-).then(
-    createWindow
+// ).then(
+//     createWindow
 )
