@@ -8,8 +8,11 @@ const buildFile = () => {
     tsProject.src().pipe(tsProject()).js.pipe(gulp.dest("build"));
     gulp.src(['./src/**/*.html', './src/**/*.js', './src/**/*.css']).pipe(gulp.dest("./build"));
 }
-// "js": "electron ./build/background.js",
+// 备选热更新（玩命打包式更新）
+// buildFile放到15行与18行
+// 命令"js": "electron ./build/background.js",
 
+//  首选热更新ts文件，"start": "electron -r ts-node/register ./",
 export const hotFile = () => new Promise(ok => {
     chokidar.watch('./src').on('change', (pathstr, stats) => {
         if (stats && !global.wacthIng) {

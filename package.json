@@ -8,24 +8,9 @@
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "view": "echo $npm_package_name",
     "start": "electron -r ts-node/register ./",
-    "pack": "",
+    "build": "electron-packager ./ nx0.1",
     "app:packager": "electron-packager ./ --platform=win32 --arch=x64 --out ./app --nx1 --overwrite",
     "app:updater": "electron-updater ./ --platform=win32 --arch=x64 --out ./app --nx1 --overwrite"
-  },
-  "build": {
-    "appId": "com.xxx.app",
-    "mac": {
-      "target": [
-        "dmg",
-        "zip"
-      ]
-    },
-    "win": {
-      "target": [
-        "nsis",
-        "zip"
-      ]
-    }
   },
   "bugs": {
     "url": "https://github.com/electron/electron-quick-start-typescript/issues"
@@ -48,9 +33,9 @@
     "cross-env": "^7.0.2",
     "crypto-js": "^4.0.0",
     "electron": "^9.1.0",
-    "electron-nice-auto-reload": "^1.1.0",
     "electron-packager": "15.0.0",
     "electron-updater": "4.3.1",
+    "electron-winstaller": "^4.0.1",
     "gulp": "^4.0.2",
     "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^6.0.0-alpha.1",
