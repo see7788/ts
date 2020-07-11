@@ -1,20 +1,18 @@
-import * as path from "path"
-import * as fs from "fs";
-import chokidar from "chokidar"
+import fs from "fs";
+import path from "path"
+import { exec } from 'child_process'
+import { hotFile } from "./hot";
 import { initSocket } from './socket'
 import { getState, setState } from "./state";
 import { WinsConfig, SrcCrx, JsFile, CssFile } from "./type";
-import { app, Menu, BrowserWindow, MenuItemConstructorOptions, } from "electron"
-const erFileAllPath = (f: string) => path.resolve(__dirname, '../er', f)
-const crx = (...p: SrcCrx[]) => path.resolve(`./crx/${p}`);
+import { Menu, BrowserWindow, MenuItemConstructorOptions } from "electron"
+const urlPath = (f: string) => '../er/' + f;
+const crx = (p: SrcCrx): Promise<string> => new Promise(ok => ok(path.resolve('../crx', p)));
 
-const js = (p: JsFile): Promise<string> => new Promise((ok, e) => {
-    const v = erFileAllPath(p);
-    ok(v)
-})
+const js = (p: JsFile): Promise<string> => new Promise((ok) => ok(urlPath(p)))
 const css = (p: CssFile): Promise<string> => new Promise(
     (ok, err) => fs.readFile(
-        erFileAllPath(p),
+        path.resolve(__dirname, urlPath(p)),
         {},
         (e, db) => e ? err(e) : ok(db.toString())
     ))
@@ -22,18 +20,14 @@ let win: BrowserWindow;
 const winsConfig: WinsConfig = {
     0: {
         label: '查看',
-        loadURL: ['https://www.baidu.com'],
-        winOptions: {
-            width: 500,
-            height: 500,
-            webPreferences: {
-                plugins: true,
-                webviewTag: true,// 是否启用 <webview> tag标签. 默认值为 false
-                nodeIntegrationInWorker: false, // Boolean(可选) - 是否在Web工作器中启用了Node集成.默认值为 false
-                nodeIntegration: false, // node的功能
-                preload: () => js('xiaoxin/get.js')
-            }
-        },
+        loadURL: ['https://taobao.com'],
+        preload_: () => js('xiaoxin/main.js'),
+        insertCSS_: () => css('xiaoxin/main.css'),
+        x: 0,
+        y: 0,
+        width: 800,
+        height: 500,
+        // executeJavaScript: 'alert("this is a test!");'
     },
     1: {
         label: '刷新',
@@ -51,45 +45,44 @@ const winsConfig: WinsConfig = {
         click: () => win.webContents.goForward()
     },
     4: {
-        label: '抓淘宝',
+        label: '抓敦煌抓淘宝',
         labelTrue: true,
         loadURL: ['https://taobao.com'],
-        insertCSS: () => css('xiaoxin/main.css'),
-        winOptions: {
-            webPreferences: {
-                preload: () => js('xiaoxin/get.js')
-            }
-        },
-    },
-    5: {
-        label: '抓敦煌',
-        labelTrue: true,
-        loadURL: ['https://www.dhgate.com/#hp-head-8'],
-        insertCSS: () => css('xiaoxin/main.css'),
-        winOptions: {
-            webPreferences: {
-                preload: () => js('xiaoxin/get.js')
-            }
-        },
+        insertCSS_: () => css('xiaoxin/main.css'),
+        preload_: () => js('xiaoxin/w4.js'),
+        // executeJavaScript: 'alert("this menu4!");',
+        x: 0,
+        y: 0,
+        width: 800,
+        height: 500,
     },
     6: {
-        label: '客服工作台',
+        label: '客服2工作台',
         labelTrue: true,
-        crx: () => crx('wxw'),
+        crx_: () => crx('wxw'),
         // dunhuan='https://www.wxwerp.com/m/publish/?erp=true&s=955036&platform=3'
     }
-};
+}
 const initMenu = () => new Promise((ok) => {
+    let c = winsConfig[global.istate.id_wins];
+    if (c === undefined || c['loadURL'] === undefined) {
+        global.istate.id_wins = 0;
+        c = winsConfig[0];
+    }
     const c1: MenuItemConstructorOptions[] = [];
     Object.values(winsConfig).forEach((v, i) => {
         if (v['labelTrue']) {
-            c1.push({
-                label: v.label,
-                click: v['click'] ? v.click : () => {
-                    global.istate.id_wins = i
-                    createWindow()
-                }
-            });
+            const click = v['click'] ? v.click : () => {
+                global.istate.id_wins = i
+                global.pcConsole('menu' + i + 'open', __filename);
+                createWindow()
+            }
+            if (v['click'] || v['loadURL']) {
+                c1.push({
+                    label: v.label,
+                    click
+                });
+            }
         }
     });
     const c2 = Menu.buildFromTemplate(c1);
@@ -99,86 +92,61 @@ const initMenu = () => new Promise((ok) => {
 })
 const createWindow = (): Promise<never> => {
     return new Promise(async (ok) => {
-        const wid = global.istate.id_wins;
-        const config = winsConfig[wid];
-        const preload = config['winOptions'] &&
-            config['winOptions']['webPreferences'] &&
-            config['winOptions']['webPreferences']['preload'];
-        if (preload && typeof preload === 'function') {
-            winsConfig[wid].winOptions.webPreferences.preload = await preload();
-        }
-        win = new BrowserWindow(winsConfig[wid]['winOptions']);
-        if (config['loadURL']) {
-            win.loadURL(...config.loadURL);
-        } else {
-            global.pcTips('没有url');
-        }
-        win.webContents.openDevTools()// ({ mode: "detach" });
-        win.webContents.on("did-finish-load", async () => {
-            if (config['insertCSS']) {
-                if (typeof config['insertCSS'] === 'function') {
-                    winsConfig[wid]['insertCSS'] = await config['insertCSS']()
+        const id = global.istate.id_wins;
+        global.pcConsole('win启动', __filename);
+        const c = winsConfig[id];
+        if (c['preload_']) {
+            if (winsConfig[id]['webPreferences'] === undefined) {
+                winsConfig[id]['webPreferences'] = {};
+                if (winsConfig[id]['webPreferences']['preload'] === undefined) {
+                    winsConfig[id]['webPreferences']['preload'] = await c['preload_']();
                 }
-                win.webContents.insertCSS(winsConfig[wid]['insertCSS'] as string);
             }
-            if (winsConfig[wid]['executeJavaScript']) {
-                win.webContents.executeJavaScript(winsConfig[wid]['executeJavaScript'])
+        }
+        win = new BrowserWindow({
+            webPreferences: winsConfig[id]['webPreferences'],
+            width: c['width'],
+            height: c['height'],
+            x: c['x'],
+            y: c['y'],
+            title: c['label']
+        });
+        win.webContents.openDevTools({ mode: "right" });
+        win.loadURL(...c.loadURL);
+        win.setTitle(c['label']);
+        win.webContents.on("did-finish-load", async () => {
+            if (c['insertCSS_']) {
+                if (c['insertCSS'] === undefined) {
+                    winsConfig[id]['insertCSS'] = await c['insertCSS_']()
+                }
+                win.webContents.insertCSS(winsConfig[id]['insertCSS']);
+            }
+            if (c['executeJavaScript']) {
+                win.webContents.executeJavaScript(c['executeJavaScript'])
             }
         });
         win.webContents.on("new-window", (e, url) => {
             e.preventDefault();
-            setState()
+            setState();
             win.loadURL(url);
+            global.pcConsole('win' + id + '线程' + process.pid + 'new-window', __filename);
         });
-        win.on('closed', () => { win = null })
-        setState();
-        global.pcConsole('窗口启动', __filename);
+        win.on('close', () => {
+            global.pcConsole('win' + id + '线程' + process.pid + 'close', __filename);
+        })
+        win.on('closed', () => {
+            global.pcConsole('win' + id + '线程' + process.pid + 'closed', __filename);
+            setState();
+        })
         ok();
     })
 };
-const wacther = () => new Promise(ok => {
-    let chokidarc: boolean = true
-    chokidar.watch('./src').on('change', (pathstr, stats) => {
-        if (stats && chokidarc) {
-            chokidarc = false
-            setTimeout(() => {
-                // path.extname(pathstr)==='.ts'
-                if (pathstr.indexOf('configs')) {
-                    global.pcConsole('app刷新', __dirname)
-                    app.relaunch()
-                    app.exit(0)
-                } else {
-                    BrowserWindow.getAllWindows().forEach(bw => {
-                        const ctx = bw.webContents
-                        if (ctx.isDevToolsOpened()) {
-                            // if reopen devTool is needed
-                            ctx.closeDevTools()
-                            ctx.reloadIgnoringCache()
-                            ctx.on("did-frame-finish-load", () => {
-                                ctx.once("devtools-opened", () => {
-                                    bw.focus()
-                                })
-                                ctx.openDevTools()
-                            })
-                        } else {
-                            ctx.reloadIgnoringCache()
-                        }
-                    })
-                    global.pcConsole('窗口刷新', __dirname)
-                }
-                chokidarc = true
-            }, 1000);
-        }
-    })
-    global.pcConsole('启动监听', __dirname)
-    ok()
-})
-export const init = () => wacther().then(
-    getState
-).then(
-    initSocket
-).then(
-    initMenu
-// ).then(
-//     createWindow
-)
+
+export const init = () => hotFile().then(
+    getState).then(
+        initSocket
+    ).then(
+        initMenu
+    ).then(
+        createWindow
+    )

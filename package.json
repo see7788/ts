@@ -6,14 +6,8 @@
   "main": "./src/background.ts",
   "scripts": {
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "build": "tsc",
     "view": "echo $npm_package_name",
-    "watch": "tsc -w",
-    "start": "npm run js2",
-    "js": "electron ./build/background.js",
-    "js2": "concurrently \"npm run watch\" \"npx gulp\" \"npm run js\"",
-    "ts": "electron ./src/background.ts",
-    "ts1": "node -r ts-node/register electron .",
+    "start": "electron -r ts-node/register ./",
     "pack": "",
     "app:packager": "electron-packager ./ --platform=win32 --arch=x64 --out ./app --nx1 --overwrite",
     "app:updater": "electron-updater ./ --platform=win32 --arch=x64 --out ./app --nx1 --overwrite"

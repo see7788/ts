@@ -7,20 +7,23 @@ const socketHost = 'ws://39.97.216.195:8889';
 export const initSocket = (): Promise<never> => new Promise(async ok => {
     global.istate.nodeUid_login = await machineId();
     const ws = new WebSocket(socketHost);
-    const socketSend: SocketSend = (cmd, db) => new Promise((o, err) => {
+    const socketSend: SocketSend = (cmd, db,toid_socket) => new Promise((o, err) => {
         ws.send(
             {
                 nodeUid_login: global.istate.nodeUid_login,
                 tel_login: global.istate.tel_login,
                 cmd,
-                db
+                db,
+                toid_socket:toid_socket?toid_socket:0
             },
            v=> err(v)
         );
         o(cmd)
-    })
-    // ws.onclose = () => socketSend('login', '').catch(console.log)
-    // ws.onerror = () => socketSend('login', '').catch(console.log)
+    }).catch(
+        v=>global.pcConsole('socket有错误'+__filename,v)
+    )
+    ws.onclose = () => socketSend('login', '')
+    ws.onerror = () => socketSend('login', '')
     ws.onopen = () => {
         socketSend('login', '');
         setTimeout(function timeout() {
@@ -28,10 +31,10 @@ export const initSocket = (): Promise<never> => new Promise(async ok => {
         }, 500);
     }
     ws.onmessage = ({ data}) => {
-        const { id_socket, cmd, db } = data as unknown as SocketRes;
+        const { cmd, db,fromid_socket} = data as unknown as  SocketRes;
         switch (cmd) {
             case '':
-                global.pcTips(db)
+                global.pcTips(db,__filename)
                 break;
             case 'login':
                 global.istate.id_socket = db as SocketParamDb['login'][1];
@@ -39,7 +42,6 @@ export const initSocket = (): Promise<never> => new Promise(async ok => {
             case 'setTimeout':
             default:
                 global.pcConsole('socket消息', db);
-            // console.log(__dirname, global.istate);
         }
     }
     global.pcConsole('在线通讯启动', __filename);

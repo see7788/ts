@@ -1,8 +1,21 @@
-var new_element=document.createElement("script");
-new_element.setAttribute("type","text/javascript");
-new_element.setAttribute("src","main.js");
-new_element.setAttribute("src","show.js");
-document.body.appendChild(new_element);
+// window.addEventListener("DOMContentLoaded", () => {
+//   const replaceText = (selector: string, text: string) => {
+//     const element = document.getElementById(selector);
+//     if (element) {
+//       element.innerText = text;
+//     }
+//   };
+
+//   for (const type of ["chrome", "node", "electron"]) {
+//     replaceText(`${type}-version`, (process.versions as any)[type]);
+//   }
+// });
+const list=['get.js','show.js'];
+for (let i = 0; i < list.length; i++) {
+	let new_element=document.createElement("script");
+	new_element.setAttribute("src",list[i]);
+	document.body.appendChild(new_element);
+}
 
 (function() {
 //根据各个不同网页获取不同的数据

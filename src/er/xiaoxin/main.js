@@ -1,9 +1,21 @@
 
+// window.addEventListener("DOMContentLoaded", () => {
+//   const replaceText = (selector: string, text: string) => {
+//     const element = document.getElementById(selector);
+//     if (element) {
+//       element.innerText = text;
+//     }
+//   };
+
+//   for (const type of ["chrome", "node", "electron"]) {
+//     replaceText(`${type}-version`, (process.versions as any)[type]);
+//   }
+// });
+
 //这个系统的主要对象
 window.DATAS = {};
-
 //判断网页链接是哪个页面
-DATAS.judgeUrl = function() {
+DATAS.judgeUrl = function () {
 	const url = location.href;
 	//淘宝搜索页
 	if (url.indexOf("s.taobao.com") != -1)
@@ -30,7 +42,7 @@ DATAS.judgeUrl = function() {
 }
 
 //获取页面变量
-DATAS.getPageVar = function(str) {
+DATAS.getPageVar = function (str) {
 	const script = document.createElement("script");
 	script.setAttribute("id", "_script_");
 	script.innerHTML = `
@@ -48,7 +60,7 @@ DATAS.getPageVar = function(str) {
 }
 
 //生成底部按钮（采集数据）并自动添加到页面
-DATAS.createBtn = function(info) {
+DATAS.createBtn = function (info) {
 	var btnBox = document.querySelector("#_btnBox_");
 	if (!btnBox) {
 		var btnBox = document.createElement("div");
@@ -62,7 +74,7 @@ DATAS.createBtn = function(info) {
 }
 
 //向盒子里追加数据（localStorage.getItem("DATA")）
-DATAS.appendData = function(obj) {
+DATAS.appendData = function (obj) {
 	let lObj = {};
 	if (localStorage.getItem("DATA"))
 		lObj = JSON.parse(localStorage.getItem("DATA"));
@@ -72,7 +84,7 @@ DATAS.appendData = function(obj) {
 }
 
 //从盒子里读取数据显示到页面元素上
-DATAS.getDatas = function(elem) {
+DATAS.getDatas = function (elem) {
 	if (localStorage.getItem("DATA")) {
 		const datas = JSON.parse(localStorage.getItem("DATA"));
 		if (!elem) return datas;
@@ -99,7 +111,7 @@ DATAS.getDatas = function(elem) {
 		elem.innerHTML += `<div class="button">全部提交</div>`;
 		const dels = elem.querySelectorAll(".delete-item");
 		for (let i = 0; i < dels.length; i++) {
-			dels[i].onclick = function() {
+			dels[i].onclick = function () {
 				const parent = this.parentElement.parentElement;
 				const window = this.parentElement;
 				datas[window.getAttribute("id")].isDel = true;
@@ -108,28 +120,28 @@ DATAS.getDatas = function(elem) {
 				DATAS.updateBtnsColor();
 			}
 		}
-	}	else {
+	} else {
 		if (!elem) return [];
 		elem.innerHTML = "数据为空！";
 	}
-/*
-	<div class="cart-item">
-		<div class="img-wrap">
-			<img src="" />
+	/*
+		<div class="cart-item">
+			<div class="img-wrap">
+				<img src="" />
+			</div>
+			<span>非常好看的衣服</span>
+			<div class="cart-item-border"></div>
+			<strong>￥100</strong>
+			<div class="delete-item"></div>
 		</div>
-		<span>非常好看的衣服</span>
-		<div class="cart-item-border"></div>
-		<strong>￥100</strong>
-		<div class="delete-item"></div>
-	</div>
-*/
+	*/
 }
 
 //同步按钮是否时灰色
-DATAS.updateBtnsColor = function() {
+DATAS.updateBtnsColor = function () {
 	const btns = document.querySelectorAll("._btn_");
 	const datas = DATAS.getDatas();
-	for (let i = 0; i <btns.length; i++) {
+	for (let i = 0; i < btns.length; i++) {
 		const id = btns[i].getAttribute("id");
 		if (datas.hasOwnProperty(id)) {
 			if (datas[id].isDel == false)
@@ -140,12 +152,12 @@ DATAS.updateBtnsColor = function() {
 }
 
 //按钮变灰，传入按钮元素对象
-DATAS.setBtnGray = function(elem) {
+DATAS.setBtnGray = function (elem) {
 	if (elem.className.indexOf("_disable_") == -1)
 		elem.className += " _disable_";
 }
 //按钮恢复，传入按钮元素对象
-DATAS.delBtnGray = function(elem) {
+DATAS.delBtnGray = function (elem) {
 	if (elem.className.indexOf("_disable_") != -1)
 		elem.className = elem.className.replace(" _disable_", "");
 }
@@ -160,7 +172,7 @@ DATAS.delBtnGray = function(elem) {
 		}]
 	}
 */
-DATAS.getObjByListRules = function(rules) {
+DATAS.getObjByListRules = function (rules) {
 	const tmp = {};
 	let id = "null";
 	for (const key in rules) {
@@ -194,7 +206,7 @@ DATAS.getObjByListRules = function(rules) {
 		}]	
 	}
 */
-DATAS.getObjByPageRules = function(rules) {
+DATAS.getObjByPageRules = function (rules) {
 	let id = "null";
 	const tmp = {};
 	for (const key in rules) {
@@ -218,7 +230,7 @@ DATAS.getObjByPageRules = function(rules) {
 
 //为每个宝贝设置获取数据按钮
 //传入的参数是获取宝贝父元素的选择器
-DATAS.setBtnForGoods = function(parentRule, rules) {
+DATAS.setBtnForGoods = function (parentRule, rules) {
 	//每个宝贝都可以获取数据
 	const observer = new MutationObserver(callBack);
 	observer.observe(document.body, {
@@ -234,11 +246,11 @@ DATAS.setBtnForGoods = function(parentRule, rules) {
 			const btn = document.createElement("button");
 			btn.className = "_btn_";
 			const elem = items[i];
-			const id = rules["id"][2] (
+			const id = rules["id"][2](
 				elem.querySelector(rules["id"][1])
 			);
 			btn.setAttribute("id", id);
-			btn.onclick = function() {
+			btn.onclick = function () {
 				for (const key in rules)
 					rules[key][0] = this.parentElement;
 				const obj = DATAS.getObjByListRules(rules);
@@ -256,9 +268,9 @@ DATAS.setBtnForGoods = function(parentRule, rules) {
 //取列表有销量的按钮生成并添加页面
 //参数1 每个商品共有的父元素
 //参数2 DATAS.getObjByListRules所需要的参数
-DATAS.getListHasSales = function(parentRule, rules) {
+DATAS.getListHasSales = function (parentRule, rules) {
 	const btn = DATAS.createBtn("取有销量的");
-	btn.onclick = function() {
+	btn.onclick = function () {
 		const items = document.querySelectorAll(parentRule);
 		for (let i = 0; i < items.length; i++) {
 			const elem = items[i];
@@ -285,9 +297,9 @@ DATAS.getListHasSales = function(parentRule, rules) {
 //取列表排名前十的按钮生成并添加页面
 //参数1 每个商品共有的父元素
 //参数2 DATAS.getObjByListRules所需要的参数
-DATAS.getListTopTen = function(parentRule, rules) {
+DATAS.getListTopTen = function (parentRule, rules) {
 	const btn = DATAS.createBtn("取排名前十");
-	btn.onclick = function() {
+	btn.onclick = function () {
 		const items = document.querySelectorAll(parentRule);
 		for (let i = 0; i < 10; i++) {
 			const elem = items[i];
@@ -305,9 +317,9 @@ DATAS.getListTopTen = function(parentRule, rules) {
 }
 
 //采集页面的按钮并添加页面
-DATAS.getDatasByPage = function(rules) {
+DATAS.getDatasByPage = function (rules) {
 	const btn = DATAS.createBtn("获取数据");
-	btn.onclick = function() {
+	btn.onclick = function () {
 		const obj = DATAS.getObjByPageRules(rules);
 		DATAS.appendData(obj);
 	}

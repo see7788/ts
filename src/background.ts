@@ -4,12 +4,9 @@ import {
   Notification
 } from "electron";
 import { init } from './configs/index'
-import path from "path"
-import { exec } from 'child_process'
-
 
 app.whenReady().then(
-    () => Promise.resolve(global.pcConsole('开始启动', __filename))
+  () => Promise.resolve(global.pcConsole('开始启动', __filename))
 ).then(
   init
 ).then(
@@ -17,7 +14,7 @@ app.whenReady().then(
 ).then(
   () => global.pcConsole('启动成功', __filename)
 ).catch(
-  () => global.pcConsole('启动失败',__filename)
+  console.log
 )
 
 app.on("window-all-closed", () => {
@@ -28,23 +25,7 @@ app.on("window-all-closed", () => {
   process.kill(process.pid)
   process.exit()
 })
-function test() {
-  return new Promise((ok) => {
-      global.pcConsole('测试窗口启动',__dirname)
-  const c = new BrowserWindow({ x: 2560, y: 0 });
-    c.webContents.openDevTools();
-    const u = [
-      'http://www.ruanyifeng.com/',
-      'http://www.w3cbus.com/',
-      'https://shan-shui-inf.glitch.me',
-      'https://huaban.com/',
-      'http://www.baidu.com/'
-    ];
-    const nowU = u[0];
-    c.loadURL(nowU)
-    ok()
-  })
-}
+
 
 global.pcTips = (title, file, silent) => {
   const notification = new Notification({
@@ -60,6 +41,27 @@ global.pcTips = (title, file, silent) => {
   notification.show()
 }
 
-global.pcConsole=global.pcTips
+global.pcConsole = global.pcTips
 
 
+function test() {
+  return new Promise((ok) => {
+    global.pcConsole('测试窗口启动', __dirname)
+    const c = new BrowserWindow({ x: 2560, y: 2 });
+    const u = [
+      'http://www.ruanyifeng.com/',
+      'http://www.w3cbus.com/',
+      'https://shan-shui-inf.glitch.me',
+      'https://huaban.com/',
+      'http://www.baidu.com/'
+    ];
+    const nowU = u[4];
+    c.loadURL(nowU)
+    c.webContents.on("new-window", (e, url) => {
+      e.preventDefault();
+      global.pcConsole('窗口new-window'+process.pid, __filename);
+      c.loadURL(url);
+  });
+    ok()
+  })
+}

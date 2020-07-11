@@ -15,7 +15,7 @@ export const getState = (): Promise<never> => new Promise( ok => {
             id_socket:'请输入手机号',
             shops_login: {},
             db: {},
-            id_wins: 0
+            id_wins: 0,
         }
     }
     global.pcConsole('state启动', __filename);
