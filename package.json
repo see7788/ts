@@ -5,11 +5,11 @@
   "homepage": "https://github.com/electron/electron-quick-start-typescript#readme",
   "author": "GitHub",
   "license": "CC0-1.0",
-  "main": "./src/background.ts",
+  "main": "./edit/background.ts",
   "scripts": {
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "src": "electron -r ts-node/register ./",
-    "dist": "electron -r ts-node/register ./src/configs/env.ts"
+    "edit": "electron -r ts-node/register ./",
+    "dist": "electron -r ts-node/register ./"
   },
   "bugs": {
     "url": "https://github.com/electron/electron-quick-start-typescript/issues"
@@ -29,8 +29,6 @@
     "cross-env": "^7.0.2",
     "electron": "^9.1.0",
     "electron-builder": "^22.7.0",
-    "electron-packager": "15.0.0",
-    "electron-winstaller": "^4.0.1",
     "gulp": "^4.0.2",
     "gulp-tslint": "^8.1.4",
     "gulp-typescript": "^6.0.0-alpha.1",
