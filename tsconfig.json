@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "edit",
-    "outDir": "./build/",
+    "outDir": "build",
     "baseUrl": ".",
     "paths": {
       "*": [
