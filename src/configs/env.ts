@@ -1,15 +1,38 @@
 import path from "path"
 import gulp from "gulp";
 import chokidar from "chokidar"
-import { app, BrowserWindow } from "electron"
+import { build } from "electron-builder";
 import { createProject } from "gulp-typescript";
+import { app, BrowserWindow, Notification } from "electron"
 
-// 备选热更新（玩命打包式更新）
-// buildFile放到15行与18行
-// 命令"js": "electron ./build/background.js",
+const NPM_SCRIPT = process.env.npm_lifecycle_event;
+global.pcTips = (title, file, silent) => {
+    const notification = new Notification({
+        // 通知的标题, 将在通知窗口的顶部显示
+        title,
+        // 通知的正文文本, 将显示在标题或副标题下面
+        body: (file ? file : ''),
+        // false有声音，true没声音
+        silent: silent ? silent : false,
+        // 通知的超时持续时间 'default' or 'never'
+        timeoutType: 'never',
+    })
+    notification.show()
+}
+
+global.pcConsole = NPM_SCRIPT ? global.pcTips : () => false;
+
+const gulpbuild = () => new Promise(ok => {
+    gulp.task('default', async () => {
+        const tsProject = createProject("tsconfig.json");
+        tsProject.src().pipe(tsProject()).js.pipe(gulp.dest("build"));
+        gulp.src(['../package.json', './src/**/*.html', './src/**/*.js', './src/**/*.css']).pipe(gulp.dest("build"));
+    });
+    ok()
+})
 
 //  首选热更新ts文件，"start": "electron -r ts-node/register ./",
-export const hotFile = () => new Promise(ok => {
+const hotfile = () => new Promise(ok => {
     chokidar.watch('./src').on('change', (pathstr, stats) => {
         if (stats && !global.wacthIng) {
             global.wacthIng = true
@@ -44,4 +67,17 @@ export const hotFile = () => new Promise(ok => {
     })
     global.pcConsole('监听启动', __dirname)
     ok()
+})
+
+export default () => new Promise(async (ok, err) => {
+    switch (NPM_SCRIPT) {
+        case 'src':
+        case 'start':
+            return hotfile().then(() => ok());
+        case 'build':
+        case 'dist':
+            return gulpbuild().then(() => build()).then(()=>err('打包完成')).catch(e=>err('打包失败'));
+        default:
+           ok();
+    }
 })

@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path"
 import { exec } from 'child_process'
-import { hotFile } from "./hot";
 import { initSocket } from './socket'
+import env from "./env";
 import { getState, setState } from "./state";
 import { WinsConfig, SrcCrx, JsFile, CssFile } from "./type";
 import { Menu, BrowserWindow, MenuItemConstructorOptions } from "electron"
@@ -142,12 +142,4 @@ const createWindow = (): Promise<never> => {
     })
 };
 
-export const init = () => hotFile().then(
-    getState
-).then(
-    initSocket
-).then(
-    initMenu
-).then(
-    createWindow
-)
+export const init = () => env().then(getState).then(initSocket).then(initMenu).then(createWindow)

@@ -1,25 +1,6 @@
-// window.addEventListener("DOMContentLoaded", () => {
-//   const replaceText = (selector: string, text: string) => {
-//     const element = document.getElementById(selector);
-//     if (element) {
-//       element.innerText = text;
-//     }
-//   };
-
-//   for (const type of ["chrome", "node", "electron"]) {
-//     replaceText(`${type}-version`, (process.versions as any)[type]);
-//   }
-// });
-const list=['get.js','show.js'];
-for (let i = 0; i < list.length; i++) {
-	let new_element=document.createElement("script");
-	new_element.setAttribute("src",list[i]);
-	document.body.appendChild(new_element);
-}
-
 (function() {
 //根据各个不同网页获取不同的数据
-const urlType = DATAS.judgeUrl();
+var urlType = DATAS.judgeUrl();
 
 //如果是淘宝搜索页
 if (urlType == 1) {
@@ -135,10 +116,10 @@ if (urlType == 7) {
 	DATAS.updateBtnsColor();
 	
 	//全部采集左侧广告按钮
-	const btn = DATAS.createBtn("采集左侧广告");
+	var btn = DATAS.createBtn("采集左侧广告");
 	btn.onclick = function() {
-		const btns = document.querySelectorAll("#colLeft .b-recommendcon li ._btn_");
-		for (let i = 0; i < btns.length; i++)
+		var btns = document.querySelectorAll("#colLeft .b-recommendcon li ._btn_");
+		for (var i = 0; i < btns.length; i++)
 			btns[i].click();
 	}
 }

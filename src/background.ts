@@ -4,10 +4,7 @@ import {
   Notification
 } from "electron";
 import { init } from './configs/index'
-
 app.whenReady().then(
-  () => Promise.resolve(global.pcConsole('开始启动', __filename))
-).then(
   init
 ).then(
   test
@@ -25,24 +22,6 @@ app.on("window-all-closed", () => {
   process.kill(process.pid)
   process.exit()
 })
-
-
-global.pcTips = (title, file, silent) => {
-  const notification = new Notification({
-    // 通知的标题, 将在通知窗口的顶部显示
-    title,
-    // 通知的正文文本, 将显示在标题或副标题下面
-    body: (file ? file : ''),
-    // false有声音，true没声音
-    silent: silent ? silent : false,
-    // 通知的超时持续时间 'default' or 'never'
-    timeoutType: 'never',
-  })
-  notification.show()
-}
-
-global.pcConsole = global.pcTips
-
 
 function test() {
   return new Promise((ok) => {

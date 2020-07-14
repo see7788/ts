@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
+    "module": "CommonJs",
+    "target": "ES5",
     "noImplicitAny": true,
     "esModuleInterop": true,
     "sourceMap": true,
@@ -16,6 +16,6 @@
   },
   "include": [
     "./src/**/*",
-    "*.d.ts"
+    "*.d.ts", "gulp.ts"
   ]
 }
