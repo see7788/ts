@@ -3,11 +3,7 @@ import gulp from "gulp";
 import chokidar from "chokidar"
 import { app, BrowserWindow } from "electron"
 import { createProject } from "gulp-typescript";
-const buildFile = () => {
-    const tsProject = createProject("tsconfig.json");
-    tsProject.src().pipe(tsProject()).js.pipe(gulp.dest("build"));
-    gulp.src(['./src/**/*.html', './src/**/*.js', './src/**/*.css']).pipe(gulp.dest("./build"));
-}
+
 // 备选热更新（玩命打包式更新）
 // buildFile放到15行与18行
 // 命令"js": "electron ./build/background.js",

@@ -1,9 +1,7 @@
 import {
     LoadURLOptions,
-    WebPreferences,
     BrowserWindowConstructorOptions
 } from "electron"
-import WebSocket from 'ws';
 
 declare global {
     namespace NodeJS {
@@ -59,7 +57,6 @@ interface IState {
     //         db: IState["db"];
     //     };
     // };
-
 }
 interface WinOptions {
     x?: number,

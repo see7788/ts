@@ -143,10 +143,11 @@ const createWindow = (): Promise<never> => {
 };
 
 export const init = () => hotFile().then(
-    getState).then(
-        initSocket
-    ).then(
-        initMenu
-    ).then(
-        createWindow
-    )
+    getState
+).then(
+    initSocket
+).then(
+    initMenu
+).then(
+    createWindow
+)
