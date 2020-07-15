@@ -6,7 +6,7 @@
     "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "edit",
-    "outDir": "./build/",
+    "outDir": "build",
     "baseUrl": ".",
     "paths": {
       "*": [
@@ -16,6 +16,7 @@
   },
   "include": [
     "edit/**/*",
-    "*.d.ts", "gulp.ts"
+    "*.d.ts", 
+    "gulp.ts"
   ]
 }

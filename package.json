@@ -5,11 +5,11 @@
   "homepage": "https://github.com/electron/electron-quick-start-typescript#readme",
   "author": "GitHub",
   "license": "CC0-1.0",
-  "main": "./edit/background.ts",
+  "main": "./build/background.js",
   "scripts": {
     "lint": "tslint -c tslint.json -p tsconfig.json",
-    "edit": "electron -r ts-node/register ./",
-    "dist": "electron -r ts-node/register ./"
+    "edit": "electron -r ts-node/register ./edit/background.ts",
+    "dist": "electron -r ts-node/register ./edit/background.ts"
   },
   "bugs": {
     "url": "https://github.com/electron/electron-quick-start-typescript/issues"
