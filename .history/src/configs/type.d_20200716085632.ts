@@ -24,7 +24,8 @@ interface SocketRes{
 }
 type SocketCmd = keyof SocketParamDb;
 interface SocketParamDb {
-    '': ['', string], // 心跳
+    //cmd:[send,req]
+    '': ['', string],
     setTimeout: ['', ''],
     login: ['', IState['id_socket']],
 }

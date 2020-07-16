@@ -1,8 +1,8 @@
 import ElectronStore = require("electron-store");
 const stateCache = new ElectronStore();
 const cacheRootK = 'ttt';
-require('electron').remote.getGlobal('istate').db = 'new value'
-'C:/Users/fang/AppData/Local/Google/Chrome/User Data/Default/Extensions/ioadaikpljilagoddljnamloiebcoopb'
+// require('electron').remote.getGlobal('istate').db = 'new value'
+// 'C:/Users/fang/AppData/Local/Google/Chrome/User Data/Default/Extensions/ioadaikpljilagoddljnamloiebcoopb'
 export const setState = async () => stateCache.set({ [cacheRootK]: global.istate });
 export const getState = (): Promise<never> => new Promise( ok => {
     const state = stateCache.get(cacheRootK);
