@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json -p tsconfig.json",
     "rootDir": "electron -r ts-node/register ./",
-    "dist": "electron -r ts-node/register ./src/configs/env.ts"
+    "buildDir": "electron -r ts-node/register ./src/configs/env.ts"
   },
   "bugs": {
     "url": "https://github.com/electron/electron-quick-start-typescript/issues"

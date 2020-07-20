@@ -3,4 +3,4 @@ dist/
 static/
 rootDir/
 outDir/,
-*.md
+**/*.md
